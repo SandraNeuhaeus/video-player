@@ -5,6 +5,9 @@ import { LocalizationMixin } from '../../mixins/localization.js';
 import '../../styling/progress-container--style-module.js';
 import { PolymerElement, html } from '@polymer/polymer';
 
+import '../../helpers/mathjax-configuration.js';
+import 'mathjax/MathJax.js';
+
 class IndicatorBlock extends BindingHelpersMixin(IocRequesterMixin(LocalizationMixin(PolymerElement))) {
   static get template() {
     return html`
@@ -186,6 +189,15 @@ class IndicatorBlock extends BindingHelpersMixin(IocRequesterMixin(LocalizationM
   _getParagraphText(text) {
     if(!text && this.localize) {
       text = this.localize('indicator-block--click-here-to-edit');
+    }
+
+    if(this.shadowRoot) {
+      var p = this.shadowRoot.querySelector('p');
+      console.log(p);
+      console.log("Queueing mathjax parsing");
+
+      // MathJax.Hub.Queue(["Typeset", MathJax.Hub, p]);
+      setTimeout(MathJax.Hub.Queue(["Typeset", MathJax.Hub, p]), 1000);
     }
 
     return text;
