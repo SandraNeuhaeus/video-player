@@ -118,7 +118,7 @@ class IndicatorBlock extends BindingHelpersMixin(IocRequesterMixin(LocalizationM
         <div class$="bubbleTriangle [[_triangleClass(indicator.position, min, max)]]"></div>
         <div class$="bubble [[_bubbleClass(indicator.position, min, max)]]">
           <textarea class$="[[_getTextareaClass(_textareaShown)]]" rows="1" placeholder="[[ localize('indicator-block--note-text') ]]" on-input="_setTextareaHeight" on-keydown="_handleTextareaKeydown" on-change="_handleTextareaChange" on-blur="_handleTextareaBlur" on-click="_handleTextareaClick">[[ indicator.text ]]</textarea>
-          <p class$="[[_getParagraphClass(_textareaShown)]]" on-click="_handleParagraphClick">[[ _getParagraphText(indicator.text, localize) ]]</p>
+          <p class$="[[_getParagraphClass(_textareaShown)]]" on-click="_handleParagraphClick"></p>
 
           <a class="button" on-click="_handleDelete">
             <fontawesome-icon prefix="fas" name="trash"></fontawesome-icon>
@@ -163,6 +163,8 @@ class IndicatorBlock extends BindingHelpersMixin(IocRequesterMixin(LocalizationM
   }
 
   _indicatorChanged(indicator) {
+    this._setParagraphText();
+
     if(indicator.initialFocus) {
       // Show tooltip, wait for browser to apply, then focus, and hide again. Tooltip will stay open since we have it focussed.
       // I'm sorry... Couldn't get it to work otherwise
@@ -186,18 +188,25 @@ class IndicatorBlock extends BindingHelpersMixin(IocRequesterMixin(LocalizationM
     return textareaShown ? '' : 'show';
   }
 
-  _getParagraphText(text) {
+  _setParagraphText() {
+    let text = null;
+
+    if(this.indicator) {
+      text = this.indicator.text;
+    }
+
     if(!text && this.localize) {
       text = this.localize('indicator-block--click-here-to-edit');
     }
 
     if(this.shadowRoot) {
       var p = this.shadowRoot.querySelector('p');
+      p.innerHTML = text;
       console.log(p);
       console.log("Queueing mathjax parsing");
 
-      // MathJax.Hub.Queue(["Typeset", MathJax.Hub, p]);
-      setTimeout(MathJax.Hub.Queue(["Typeset", MathJax.Hub, p]), 1000);
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub, p]);
+      // setTimeout(MathJax.Hub.Queue(["Typeset", MathJax.Hub, p]), 1000);
     }
 
     return text;
@@ -220,7 +229,7 @@ class IndicatorBlock extends BindingHelpersMixin(IocRequesterMixin(LocalizationM
 
   _handleTextareaChange(e) {
     this._indicatorManager.setIndicatorText(this.indicator, e.target.value);
-    this.notifyPath('indicator.text');
+    this._setParagraphText();
   }
 
   _handleTextareaKeydown(e) {
