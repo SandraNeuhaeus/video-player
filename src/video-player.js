@@ -379,7 +379,7 @@ class VideoPlayer extends BindingHelpersMixin(IocRequesterMixin(IocProviderMixin
   _setAvailableQualities(streams, fallbackStreamActive, fallbackStream) {
     if (this._stateManager && streams) {
       let supportedQualities = Object.values(QUALITY_MODES);
-      if(!HlsHelper.hasHlsSupport) {
+      if(!HlsHelper.hasHlsSupport || this._isIOS) {
         supportedQualities = supportedQualities.filter(quality => quality !== QUALITY_MODES.HLS);
       }
 
@@ -424,12 +424,9 @@ class VideoPlayer extends BindingHelpersMixin(IocRequesterMixin(IocProviderMixin
       'iPhone',
       'iPod',
     ]);
-
     let platform = navigator?.userAgentData?.platform || navigator?.platform;
-    if (platform) {
-        if (platform in iDevices) {
-          return true;
-        }
+    if (iDevices.has(platform)) {
+      return true;
     }
 
     return false;
