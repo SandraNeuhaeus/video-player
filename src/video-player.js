@@ -416,22 +416,20 @@ class VideoPlayer extends BindingHelpersMixin(IocRequesterMixin(IocProviderMixin
   }
 
   _getIsIOS() {
-    const iDevices = [
+    const iDevices = new Set([
       'iPad Simulator',
       'iPhone Simulator',
       'iPod Simulator',
       'iPad',
       'iPhone',
       'iPod',
-    ];
+    ]);
 
     let platform = navigator?.userAgentData?.platform || navigator?.platform;
     if (platform) {
-      while (iDevices.length) {
-        if (platform === iDevices.pop()) {
+        if (platform in iDevices) {
           return true;
         }
-      }
     }
 
     return false;
