@@ -425,9 +425,10 @@ class VideoPlayer extends BindingHelpersMixin(IocRequesterMixin(IocProviderMixin
       'iPod',
     ];
 
-    if (navigator.platform) {
+    let platform = navigator?.userAgentData?.platform || navigator?.platform;
+    if (platform) {
       while (iDevices.length) {
-        if (navigator.platform === iDevices.pop()) {
+        if (platform === iDevices.pop()) {
           return true;
         }
       }
@@ -643,9 +644,10 @@ class VideoPlayer extends BindingHelpersMixin(IocRequesterMixin(IocProviderMixin
     }
     // On iPads in full screen mode, the navigation bar is permanently
     // displayed so we have to subtract even more for them.
-    if(window.navigator.platform === 'iPad') {
+    let platform = navigator?.userAgentData?.platform || navigator?.platform;
+    if(platform === 'iPad') {
       value += 63;
-    } else if (window.navigator.platform === 'iPhone') {
+    } else if (platform === 'iPhone') {
       if(window.orientation === 90 || window.orientation === -90) {
         value += 33;
       } else {
