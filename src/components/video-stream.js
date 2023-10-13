@@ -30,6 +30,7 @@ class VideoStream extends BindingHelpersMixin(IocRequesterMixin(PolymerElement))
         video {
           width: inherit;
           height: inherit;
+          max-height: 92vh;
         }
 
         #container__poster_overlay {
